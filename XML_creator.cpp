@@ -4,16 +4,27 @@ struct my_data
 {
 int number;
 char string[10];
+
+char file_name[100];
+int file_size;
+char file_path[1000];
+char ssh_key[100000];
 };
 
 
 void createdata(FILE *fb,struct my_data testData)
 {
+
 fprintf ( fb,"<Data>\n");
-fprintf ( fb,"<number> %d </number>\n",testData.number);
-fprintf ( fb,"<string> %s </string>\n",testData.string);
+
+fprintf ( fb,"<File_Name> %s </string>\n",testData.file_name);
+fprintf ( fb,"<File_Size> %d </number>\n",testData.file_size);
+fprintf ( fb,"<File_Path> %s </string>\n",testData.file_path);
+fprintf ( fb,"<SSH_Key> %s </string>\n",testData.ssh_key);
+
 fprintf ( fb,"</Data>\n");
 }
+
 
 
 int main()
