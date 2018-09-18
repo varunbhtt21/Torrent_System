@@ -5,7 +5,92 @@
 #include <string>
 #include <cstring>
 #include <unistd.h>
+
+#include <string.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <stdio.h>
+#include <stdlib.h>
 using namespace std;
+
+#define PORT 15000
+
+
+
+int call_for_tracker(char buffer[5000]){
+
+  int clientSocket, ret;
+  struct sockaddr_in serverAddr;
+  //char buffer[1024];
+
+  clientSocket = socket(AF_INET, SOCK_STREAM, 0);  // For TCP we use SOCK_STREAM
+
+  if(clientSocket < 0){
+    printf("[-] Error in connection \n");
+    exit(1);
+  }
+
+  printf("[+] Clent Socket is created \n");
+
+  memset(&serverAddr, '\0', sizeof(serverAddr));
+
+  serverAddr.sin_family = AF_INET;
+  serverAddr.sin_port = htons(PORT);
+  serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);  //inet_addr("127.0..0.1");
+
+  ret = connect(clientSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
+
+  if(ret < 0){
+    printf("[-] Error in Connection \n");
+  }
+  printf("[+]Connected To server \n");
+
+  
+
+  
+  int b;
+
+  send(clientSocket, buffer, b, 0);
+      
+    
+    printf("\ndone");
+
+    close(clientSocket);
+
+  return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // g++ Split_File.cpp -L/usr/local/lib/ -lssl -lcrypto
@@ -51,21 +136,18 @@ char ssh_key[999999];
 
 void createdata(FILE *fb, struct my_data testData)
 {
-
 fprintf ( fb,"<Data>\n");
 
-fprintf ( fb,"<File_Name> %s </string>\n",testData.file_name);
+fprintf ( fb,"<File_Name> %s </File_Name>\n",testData.file_name);
 
 fprintf ( fb,"<File_Size>");
 file_size(fb);
-fprintf ( fb, "<File_Size>"); 
+fprintf ( fb, "<File_Size>\n"); 
 
-fprintf (fb, "</number>\n");
 fprintf ( fb,"<File_Path> %s </File_Path>\n",testData.file_path);
 fprintf ( fb,"<SSH_Key> %s </SSH_Key>\n",testData.ssh_key);
 
 fprintf ( fb,"</Data>\n");
-
 
 cout<<endl<<"FILE CREATED"<<endl;
 }
@@ -170,9 +252,24 @@ int main() {
             testData.file_size = size;
             strcpy(testData.file_path, PATH);
             strcpy(testData.ssh_key, pocket);
+            
 
-            fprintf ( fb,"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-            createdata(fb, testData);
+
+            // String Preparation
+            char string_processing[5000], num[5000];
+
+            strcat(string_processing, pocket);
+            strcat(string_processing, "$");
+            strcat(string_processing, testData.file_name);
+            strcat(string_processing, "#");
+            strcat(string_processing, testData.file_path);
+            strcat(string_processing, "#");
+            sprintf(num, "%zu", testData.file_size); 
+            strcat(string_processing, num);
+
+
+            call_for_tracker(string_processing);
+
 
             return 0;
 }
