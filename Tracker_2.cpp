@@ -19,7 +19,48 @@ using namespace std;
 #define PORT 15013
 
 
+void synchronization(){
 
+
+   int sockfd, ret;
+   struct sockaddr_in serverAddr;
+   int newSocket;
+   struct sockaddr_in newAddr;
+   socklen_t addr_size;
+   char buffer[4096];
+
+
+   memset(&serverAddr, '\0', sizeof(serverAddr));
+   serverAddr.sin_family = AF_INET;
+   serverAddr.sin_port = htons(PORT);
+   serverAddr.sin_addr.s_addr = htonl(INADDR_ANY); 
+
+   ret = bind(sockfd, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
+
+   int n = 0;
+
+   bzero(buffer, MAX_SIZE_BUFFER);
+   n = read(sockfd, buffer, MAX_SIZE_BUFFER - 1);
+
+   
+   printf("after read%d\n", n);
+  
+  if (n <= 0)
+  {
+      break;
+  }
+
+  n2 = send(newsockfd, buffer, n, MSG_NOSIGNAL);
+  
+  if (n2 == -1)
+  {
+    close(sockfd);
+    close(newsockfd);
+    return;
+  }
+
+
+}
 
 
 
