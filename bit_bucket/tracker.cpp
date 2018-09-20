@@ -14,7 +14,7 @@
 #include <algorithm>
 using namespace std; 
 
-#define PORT 15000
+#define PORT 15006
 
 int main()
 {
@@ -168,45 +168,3 @@ int main()
 }
   
    
-
-
-
-
-
-
-  /*
-   // Iterate over the multimap using Iterator
-	for (std::multimap<string, string>::iterator it = fetch.begin();
-			it != mmapOfPos.end(); it++)
-		std::cout << it->first << " :: " << it->second << std::endl;
-
-	
-
-
-
-
-
-// Iterate over the multimap using range based for loop
-	for (std::pair<char, int> elem : mmapOfPos)
-		std::cout << elem.first << " :: " << elem.second << std::endl;       */
-
-
-
-
-   /*
-    std::map<std::string, int>::iterator it = mapOfWords.begin();
-    while(it != mapOfWords.end())
-    {
-        std::cout<<it->first<<" :: "<<it->second<<std::endl;
-        it++;
-    }
-    // Check if insertion is successful or not
-    if(mapOfWords.insert(std::make_pair("earth", 1)).second == false)
-    {
-        std::cout<<"Element with key 'earth' not inserted because already existed"<<std::endl;
-    }
-    // Searching element in std::map by key.
-    if(mapOfWords.find("sun") != mapOfWords.end())
-        std::cout<<"word 'sun' found"<<std::endl;
-    if(mapOfWords.find("mars") == mapOfWords.end())
-        std::cout<<"word 'mars' not found"<<std::endl; */

@@ -16,7 +16,7 @@
 #include <stdlib.h>
 using namespace std;
 
-#define PORT 15000
+#define PORT 15007
 
 
 
@@ -233,7 +233,16 @@ int main() {
 
             // Variable Preparation For XML
             cout<<"Enter File Name"<<endl;
-            cin>>name;
+
+              fgets(name, 100, stdin);
+
+            
+            for(int i=0;i <strlen(name);i++)
+            if(name[i]==' '){
+                name[i]='_';
+            }
+
+           
             getcwd(PATH, sizeof(PATH));
 
             //Appending file name to PATH

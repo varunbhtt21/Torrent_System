@@ -7,13 +7,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define PORT 15000
+#define PORT 15001
 
 int main(){
 
   int clientSocket, ret;
   struct sockaddr_in serverAddr;
-  char buffer[1024];
+  //char buffer[1024];
 
   clientSocket = socket(AF_INET, SOCK_STREAM, 0);  // For TCP we use SOCK_STREAM
 
@@ -39,13 +39,13 @@ int main(){
 
   
 
-  FILE *fb=fopen("test.xml","r");
+ char buffer[] = {"bdashdkjshkjhksd3487348732784 $ jhdjsah.kjhsa.dh.jsdh463276327647836$kfjskfjkasjkfjaskjjksdjaskj"};  
   
   int b;
-  while( (b = fread(buffer, 1, sizeof(buffer), fb))>0 ){
-        send(clientSocket, buffer, b, 0);
-    }
 
+  send(clientSocket, buffer, b, 0);
+      
+    
     printf("\ndone");
 
   return 0;
