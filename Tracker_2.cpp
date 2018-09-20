@@ -16,7 +16,7 @@
 #include <fstream>
 using namespace std; 
 
-#define PORT 15020
+#define PORT 15013
 
 
 
@@ -26,8 +26,8 @@ using namespace std;
 void copying_seeder_file() {
     
 
-    std::ifstream in("temp_tracker.txt");
-    std::ofstream out("seeder_list.txt", std::ios_base::out | std::ios_base::app);
+    std::ifstream in("temp_tracker_2.txt");
+    std::ofstream out("seeder_list_2.txt", std::ios_base::out | std::ios_base::app);
 
     for (std::string str; std::getline(in, str); )
     {
@@ -159,7 +159,7 @@ int main()
              // Inserting an element in map
             fetch.insert(std::pair<string, string>(key, value));
 
-            seed = fopen("temp_tracker.txt","w");
+            seed = fopen("temp_tracker_2.txt","w");
 
             // Running Iterator
             for (std::multimap<string, string>::iterator it = fetch.begin();

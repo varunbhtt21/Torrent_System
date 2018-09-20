@@ -13,7 +13,7 @@
 #include <fstream>
 using namespace std; 
 
-#define PORT 15007
+#define PORT 15012
 
 
 
@@ -23,30 +23,18 @@ using namespace std;
 
 
 
-
-
-
-
-
-
+// Maintaining Seeder File
 void copying_seeder_file() {
     
 
-    std::ifstream in("temp_tracker.txt");
-    std::ofstream out("seeder_list.txt", std::ios_base::out | std::ios_base::app);
+    std::ifstream in("temp_tracker_1.txt");
+    std::ofstream out("seeder_list_1.txt", std::ios_base::out | std::ios_base::app);
 
     for (std::string str; std::getline(in, str); )
     {
         out << str;
     }
 }
-
-
-
-
-
-
-
 
 
 
@@ -131,11 +119,7 @@ int main()
                 
                 if(b = recv(newSocket, buffer, 2048,0)> 0 ) {
 
-             //     cout<<buffer<<endl;
-
-
-
-               
+             
 
                 //String Processing
                 char* token;
@@ -165,7 +149,7 @@ int main()
              // Inserting an element in map
             fetch.insert(std::pair<string, string>(key, value));
 
-            seed = fopen("temp_tracker.txt","w");
+            seed = fopen("temp_tracker_1.txt","w");
 
             // Running Iterator
             for (std::multimap<string, string>::iterator it = fetch.begin();
@@ -180,38 +164,7 @@ int main()
 
           // For copying to Seeder File
             copying_seeder_file();
-
-
-
-
-/*
-          // File_Name ----------> Key
-            
-            char *next;
-            next = strtok(value, "#");   
-            strcpy(value, next);  
-          
-
-            std::map<std::string, string> track;
-            track.insert(std::make_pair(value, key));
-
-            FILE *keep_track;
-            keep_track = fopen("Finding_key.txt","w+");
-            std::map<std::string, string>::iterator it = track.begin();
-
-
-            while(it != track.end())
-            {
-                
-                fprintf(keep_track," %s  $  %s \n", it->first.c_str(), it->second.c_str());
-                fprintf(keep_track,"hello\n");
-                it++;
-            }
-                                                                   
-
-            fclose(keep_track);
-                                                                  */
-        	               
+	               
 
         } // End of Tracker keep on running       
         	    
