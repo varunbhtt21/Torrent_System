@@ -16,7 +16,7 @@
 #include <stdlib.h>
 using namespace std;
 
-#define PORT 15013
+#define PORT 18046
 
 
 
@@ -93,7 +93,7 @@ int call_for_tracker(char buffer[5000]){
 
 
 
-// g++ Split_File.cpp -L/usr/local/lib/ -lssl -lcrypto
+// g++ client_side.cpp -L/usr/local/lib/ -lssl -lcrypto
 
 
 // Calculate File Size
@@ -121,7 +121,6 @@ void file_size(FILE *fb)
 
 
 
-// XML CREATOR
 
 struct my_data
 {
@@ -133,29 +132,6 @@ char file_path[500];
 char ssh_key[999999];
 };
 
-
-void createdata(FILE *fb, struct my_data testData)
-{
-fprintf ( fb,"<Data>\n");
-
-fprintf ( fb,"<File_Name> %s </File_Name>\n",testData.file_name);
-
-fprintf ( fb,"<File_Size>");
-file_size(fb);
-fprintf ( fb, "<File_Size>\n"); 
-
-fprintf ( fb,"<File_Path> %s </File_Path>\n",testData.file_path);
-fprintf ( fb,"<SSH_Key> %s </SSH_Key>\n",testData.ssh_key);
-
-fprintf ( fb,"</Data>\n");
-
-cout<<endl<<"FILE CREATED"<<endl;
-}
-
-
-
-
-// xml_creator(file_name, PATH, size, pocket);
 
 
 
@@ -183,7 +159,7 @@ int main() {
 
 
 
-
+    int sha_pointer = 0 ;
 
     while (ch != EOF) {
 
@@ -191,6 +167,8 @@ int main() {
 
             charcounter = 1;
             buffer[temp] = '\0';  // After Every String PUT NULL
+            temp=0;  // Buffer Preparation for next iteration
+
 
 
             //Generate SSH key
@@ -204,24 +182,66 @@ int main() {
             }
 
 
+             //Fetching first 20 characters
+           
+            while(data<20){
+                pocket[sha_pointer] = buf[data];
+                data++;
+                sha_pointer++;
+            }
 
-            //Concatenate Strings
-            strcat(pocket,buf);
-            temp=0;
+            
         }
 
-            // Reading, putting, temp is buffer position and charcounter is counting characters
+            // putting data to buffer
             ch = fgetc(ptr_readfile);
             buffer[temp]=ch;
+
+            // Maintaining buffer pointer and character count
             temp++;
             charcounter++;
+
             size++;
+
+            data = 0 ; 
     }
 
             fclose(ptr_readfile);
        
+            
 
 
+
+            data = 0;
+
+            // For remaining characters     
+            if(charcounter != 1){
+
+                buffer[temp] = '\0';
+
+
+            //Generate SSH key
+            memset(buf, 0x0, SHA_DIGEST_LENGTH*2);
+            memset(tmp, 0x0, SHA_DIGEST_LENGTH);
+         
+            SHA1((unsigned char *)buffer, strlen(buffer), tmp);
+            int i;
+            for (i=0; i < SHA_DIGEST_LENGTH; i++) {
+                sprintf((char*)&(buf[i*2]), "%02x", tmp[i]);
+            }
+
+
+             //Fetching first 20 characters
+           
+            while(data<20){
+                pocket[sha_pointer] = buf[data];
+                data++;
+                sha_pointer++;
+            }
+
+     }
+
+            pocket[sha_pointer] = '\0';
 
 
             // OUR SSH KEY IS READY in pocket variable
