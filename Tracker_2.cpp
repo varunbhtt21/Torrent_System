@@ -11,17 +11,22 @@
 #include <iterator>
 #include <algorithm>
 #include <fstream>
+
+#include <cstdlib>
+#include <pthread.h>
+#include <stdlib.h> 
 #include<time.h>
 using namespace std; 
 
-#define PORT 18046
-#define PORT2 19031
+#define PORT 18050    // For Handling Client Request
+#define PORT2 19036  // Tracker 1 to Tracker 2 For Synchronization
+#define PORT3 25503 // Tracker 2 to Tracker 1 For Synchronization
 
 
 
 
 
-int synchronization(){
+void *synchronization_from_tracker1(void *threadid){
 
 
     int server_fd, new_socket, valread; 
@@ -43,7 +48,7 @@ int synchronization(){
     } 
 
 
-    cout<<"\nTracker 2 : I am Listening \n";
+    
        
     // Forcefully attaching socket to the port 8080 
     if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, 
@@ -69,55 +74,116 @@ int synchronization(){
         perror("listen"); 
         exit(EXIT_FAILURE); 
     } 
-    if ((new_socket = accept(server_fd, (struct sockaddr *)&address,  
-                       (socklen_t*)&addrlen))<0) 
+
+
+while(1){
+
+
+
+              cout<<"\nTracker 2 : I am Listening \n";
+
+              if ((new_socket = accept(server_fd, (struct sockaddr *)&address,  
+                                 (socklen_t*)&addrlen))<0) 
+              { 
+                  perror("accept"); 
+                  exit(EXIT_FAILURE); 
+              } 
+
+              
+              valread = read( new_socket , buffer, 1024); 
+            //  printf("%s\n",buffer ); 
+
+              cout<<"\n Tracker 2 Updated!!!\n";
+           //   send(new_socket , hello , strlen(hello) , 0 ); 
+            //  printf("Hello message sent\n"); 
+
+             
+              char write_data1[1000], write_data2[1000];
+
+            
+              strcpy(write_data1, buffer); 
+
+             
+
+
+              //file update
+
+
+               char filename[ ] = "seeder_list_2.txt";
+
+               fstream uidlFile(filename, std::fstream::in | std::fstream::out | std::fstream::app);
+
+
+                if (uidlFile.is_open()) 
+                {
+                  uidlFile << "\n";
+                  uidlFile << filename<<write_data1;
+                  uidlFile.close();
+                  cout<<"\nSeeder List Updated!!!";
+                } 
+                else 
+                {
+                  cout << "Cannot open file";
+                }
+     }
+
+  //  return 0; 
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// Send Data to Tracker 1
+int tracker_connection(char sync_data[5000]){
+
+
+    struct sockaddr_in address; 
+    int sock = 0, valread; 
+    struct sockaddr_in serv_addr; 
+    char hello[1000] = "Hello from client";
+
+     
+    char buffer[1024] = {0}; 
+    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
     { 
-        perror("accept"); 
-        exit(EXIT_FAILURE); 
+        printf("\n Socket creation error \n"); 
+        return -1; 
     } 
-
-    
-    valread = read( new_socket , buffer, 1024); 
-  //  printf("%s\n",buffer ); 
-
-    cout<<"data received";
- //   send(new_socket , hello , strlen(hello) , 0 ); 
-  //  printf("Hello message sent\n"); 
-
-    char *token;
-    char write_data1[1000], write_data2[1000];
-
-    token = strtok(buffer, "@"); 
-    strcpy(write_data1, token);
-       
-    token = strtok(NULL, "@");  
-    strcpy(write_data2, token); 
-
    
+    memset(&serv_addr, '0', sizeof(serv_addr)); 
+   
+    serv_addr.sin_family = AF_INET; 
+    serv_addr.sin_port = htons(PORT3); 
+       
+    // Convert IPv4 and IPv6 addresses from text to binary form 
+    if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0)  
+    { 
+        printf("\nInvalid address/ Address not supported \n"); 
+        return -1; 
+    } 
+   
+    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) 
+    { 
+        printf("\nConnection Failed \n"); 
+        return -1; 
+    } 
+    send(sock , sync_data , strlen(sync_data) , 0 ); 
+    printf("Data sent to tracker1 !!!\n"); 
+  //  valread = read( sock , buffer, 1024); 
+   // printf("%s\n",buffer ); 
 
-
-    //file update
-
-
-     char filename[ ] = "seeder_list_2.txt";
-
-     fstream uidlFile(filename, std::fstream::in | std::fstream::out | std::fstream::app);
-
-
-      if (uidlFile.is_open()) 
-      {
-        uidlFile << "\n";
-        uidlFile << filename<<write_data1;
-        uidlFile.close();
-      } 
-      else 
-      {
-        cout << "Cannot open file";
-      }
-
-
+    close(sock);
     return 0; 
-
 
 }
 
@@ -153,7 +219,10 @@ void copying_seeder_file() {
 
 
 
-int client_communication(){
+
+
+
+void *client_communication(void *threadid){
 
 
   //cout<<jhanda; 
@@ -279,11 +348,11 @@ int client_communication(){
 
           // For copying to Seeder File
             copying_seeder_file();
+            tracker_connection(sync_data);
 
             
 
 
-           
            
 
         } // End of Tracker keep on running       
@@ -292,14 +361,7 @@ int client_communication(){
             
   }// End of Tracker code
 
-    
-
-
-
 }
-
-
-
 
 
 
@@ -311,17 +373,31 @@ int client_communication(){
 
 int main()
 {
+  /*
+
+    pthread_t thread1, thread2;
+
+    // make threads
+    pthread_create(&thread1, NULL, synchronization);
+    pthread_create(&thread2, NULL, client_communication);
+
+    // wait for them to finish
+    pthread_join(thread1, NULL);
+    pthread_join(thread2, NULL); 
+*/
+
+
+     pthread_t thread1, thread2;
+
+    int  i=1;
+    // make threads
+    int sync = pthread_create(&thread1, NULL, synchronization_from_tracker1, NULL);
+
+    int client = pthread_create(&thread2, NULL, client_communication, NULL);
+
   
+    pthread_exit(NULL);
 
-
- while(1){
-            
-            synchronization();
-
-
-            
-            client_communication();
-          }
 
 
 	  return 0;

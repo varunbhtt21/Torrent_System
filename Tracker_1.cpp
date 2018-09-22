@@ -13,15 +13,160 @@
 #include <iterator>
 #include <algorithm>
 #include <fstream>
+#include <cstdlib>
+#include <pthread.h>
+#include <stdlib.h> 
 using namespace std; 
 
-#define PORT 17044
-#define PORT2 19031
+#define PORT 17049    // For Handling Client Request
+#define PORT2 19036  // Tracker 1 to Tracker 2 For Synchronization
+#define PORT3 25503 // Tracker 2 to Tracker 1 For Synchronization
+
+
+std::multimap<string, string> fetch;
+
+
+
+// Receiving Data From Tracker 1
+void *synchronization_from_tracker2(void *threadid){
+
+
+    int server_fd, new_socket, valread; 
+    struct sockaddr_in address; 
+    int opt = 1; 
+    int addrlen = sizeof(address); 
+    char buffer[1024] = {0}; 
+    char hello[1000] = "Hello from server"; 
+       
+
+
+
+
+    // Creating socket file descriptor 
+    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) 
+    { 
+        perror("socket failed"); 
+        exit(EXIT_FAILURE); 
+    } 
+
+
+    
+       
+    // Forcefully attaching socket to the port 8080 
+    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, 
+                                                  &opt, sizeof(opt))) 
+    { 
+        perror("setsockopt"); 
+        exit(EXIT_FAILURE); 
+    } 
+   
+    address.sin_family = AF_INET; 
+    address.sin_addr.s_addr = INADDR_ANY; 
+    address.sin_port = htons( PORT3 ); 
+       
+    // Forcefully attaching socket to the port 8080 
+    if (bind(server_fd, (struct sockaddr *)&address,  
+                                 sizeof(address))<0) 
+    { 
+        perror("bind failed"); 
+        exit(EXIT_FAILURE); 
+    } 
+    if (listen(server_fd, 3) < 0) 
+    { 
+        perror("listen"); 
+        exit(EXIT_FAILURE); 
+    } 
+
+
+while(1){
+
+
+  
+              cout<<"\nTracker 1 : I am Listening \n";
+
+              if ((new_socket = accept(server_fd, (struct sockaddr *)&address,  
+                                 (socklen_t*)&addrlen))<0) 
+              { 
+                  perror("accept"); 
+                  exit(EXIT_FAILURE); 
+              } 
+
+              
+              valread = read( new_socket , buffer, 1024); 
+            //  printf("%s\n",buffer ); 
+
+              cout<<"\n Tracker 1 Updated!!!\n";
+           //   send(new_socket , hello , strlen(hello) , 0 ); 
+            //  printf("Hello message sent\n"); 
+
+             
+              char write_data1[1000], write_data2[1000];
+              strcpy(write_data2, buffer); 
+
+             
+
+
+              //file update
+
+
+               char filename[ ] = "seeder_list_1.txt";
+
+               fstream uidlFile(filename, std::fstream::in | std::fstream::out | std::fstream::app);
+
+
+                if (uidlFile.is_open()) 
+                {
+                  uidlFile << "\n";
+                  uidlFile << filename<<write_data1;
+                  uidlFile.close();
+                } 
+                else 
+                {
+                  cout << "Cannot open file";
+                }
+     }
+
+  //  return 0; 
+
+
+}
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Sending Data To Tracker 2
 int tracker_connection(char sync_data[5000]){
 
 
@@ -56,7 +201,7 @@ int tracker_connection(char sync_data[5000]){
         return -1; 
     } 
     send(sock , sync_data , strlen(sync_data) , 0 ); 
-    printf("Data sent to tracker2 and Ypur Data is\n"); 
+    printf("Data sent to tracker2 !!!\n"); 
   //  valread = read( sock , buffer, 1024); 
    // printf("%s\n",buffer ); 
 
@@ -106,67 +251,55 @@ void copying_seeder_file() {
 
 
 
+void *client_handling(void *threadid){
 
 
-
-
-
-
-
-
-
-
-
-int main()
-{
-
-
-	 // Variables for Sending Data
-	 int sockfd, ret;
-	 struct sockaddr_in serverAddr;
+// Variables for Sending Data
+   int sockfd, ret;
+   struct sockaddr_in serverAddr;
    int newSocket;
    struct sockaddr_in newAddr;
    socklen_t addr_size;
 
-	 char buffer[4096];
+   char buffer[4096];
    char sync_data[5000];
-	 pid_t childpid;
+   pid_t childpid;
      
 
          // Creating Socket
-      	 sockfd = socket(AF_INET, SOCK_STREAM, 0);
+         sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
-      	 if(sockfd < 0){
-      		  printf("[-] Error in connection \n");
-          	exit(1);
-      	  }
+         if(sockfd < 0){
+            printf("[-] Error in connection \n");
+            exit(1);
+          }
 
-      	  printf("[+] Clent Socket is created \n");
+          printf("[+] Clent Socket is created \n");
   
-      	memset(&serverAddr, '\0', sizeof(serverAddr));
-      	serverAddr.sin_family = AF_INET;
-      	serverAddr.sin_port = htons(PORT);
-      	serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);                     //inet_addr("127.0.0.1");
+        memset(&serverAddr, '\0', sizeof(serverAddr));
+        serverAddr.sin_family = AF_INET;
+        serverAddr.sin_port = htons(PORT);
+        serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);                     //inet_addr("127.0.0.1");
 
 
 
         // I.P and PORT binding
-      	ret = bind(sockfd, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
+        ret = bind(sockfd, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
 
-      	if(ret < 0){
-      		printf("[-]Error in binding \n");
-      		exit(1);
-      	}
+        if(ret < 0){
+          printf("[-]Error in binding \n");
+          exit(1);
+        }
 
-      	printf("[+]Bind to port %d\n", 4444);
+        printf("[+]Bind to port %d\n", 4444);
 
-      	if(listen(sockfd, 10) == 0){
-      		printf("[+]Listening.....\n");
-      	}
+        if(listen(sockfd, 10) == 0){
+          printf("[+]Listening.....\n");
+        }
       
-      	else{
-      		printf("[-]Error in binding \n");
-      	}
+        else{
+          printf("[-]Error in binding \n");
+        }
 
 
 
@@ -178,17 +311,17 @@ int main()
       int b = 0, flag=0;
 
       // Tracker keep on running
-  		while(1)
+      while(1)
       {
-    	    	
+            
                 // Receiving data in buffer
                 newSocket = accept(sockfd, (struct sockaddr*)&newAddr, &addr_size);    
-        	    	
-        	    	if(newSocket < 0){
-        	      		exit(1);
-        	    	} 
-        	    	printf("Connection accepted from %s:%d valueof b %d\n", inet_ntoa(newAddr.sin_addr), ntohs(newAddr.sin_port),b);
-    	         
+                
+                if(newSocket < 0){
+                    exit(1);
+                } 
+                printf("Connection accepted from %s:%d valueof b %d\n", inet_ntoa(newAddr.sin_addr), ntohs(newAddr.sin_port),b);
+               
                  
 
                 // For Receiving data from client 
@@ -208,7 +341,7 @@ int main()
 
                 // File Processing MULTIMAP
                 FILE *seed;
-                std::multimap<string, string> fetch;
+                
 
 
 
@@ -250,16 +383,61 @@ int main()
            
 
            tracker_connection(sync_data);
-           cout<<"\npehla socket bund ho gya or tracker nai data bhej dia";
-
-
 
         } // End of Tracker keep on running       
-        	    
-    close(newSocket);
-        		
-  }// End of Tracker code
+              
+      close(newSocket);
+              
+    }// End of Tracker code
 
+
+
+}
+
+
+
+void load_data_to_map(){
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+int main()
+{
+
+    load_data_to_map();
+
+    pthread_t thread1, thread2;
+
+    int  i=1;
+    // make threads
+    int sync = pthread_create(&thread1, NULL, synchronization_from_tracker2, NULL);
+
+    int client = pthread_create(&thread2, NULL, client_handling, NULL);
+
+  
+    pthread_exit(NULL);
+	 
     
 
 	  return 0;

@@ -2,4 +2,31 @@
 
 seeder_list_2.txt58bda97c7678120575672581d6e1eb1d203d1ab2292bc6be4d127a9d7dde$kaalu
 #/home/varun/Desktop/Assignment2_Torrent_System/torrent_system/kaalu
+#1164177 58bda97c7678120575672581d6e1eb1d203d1ab2292bc6be4d127a9d7dde  $  harami#/home/varun/Desktop/Assignment2_Torrent_System/torrent_system/harami#1164177 
+seeder_list_2.txt58bda97c7678120575672581d6e1eb1d203d1ab2292bc6be4d127a9d7dde$kuttamarega
+#/home/varun/Desktop/Assignment2_Torrent_System/torrent_system/kuttamarega
 #1164177
+seeder_list_2.txt58bda97c7678120575672581d6e1eb1d203d1ab2292bc6be4d127a9d7dde$bhag_ja_yahan_sai
+#/home/varun/Desktop/Assignment2_Torrent_System/torrent_system/bhag_ja_yahan_sai
+#1164177 58bda97c7678120575672581d6e1eb1d203d1ab2292bc6be4d127a9d7dde  $  gazab_hogaya_bhai#/home/varun/Desktop/Assignment2_Torrent_System/torrent_system/gazab_hogaya_bhai#1164177 
+seeder_list_2.txt58bda97c7678120575672581d6e1eb1d203d1ab2292bc6be4d127a9d7dde$laakhmilega
+#/home/varun/Desktop/Assignment2_Torrent_System/torrent_system/laakhmilega
+#1164177
+seeder_list_2.txt58bda97c7678120575672581d6e1eb1d203d1ab2292bc6be4d127a9d7dde$degatu
+#/home/varun/Desktop/Assignment2_Torrent_System/torrent_system/degatu
+#1164177
+seeder_list_2.txt58bda97c7678120575672581d6e1eb1d203d1ab2292bc6be4d127a9d7dde$gaanja
+#/home/varun/Desktop/Assignment2_Torrent_System/torrent_system/gaanja
+#1164177@hello
+seeder_list_2.txt58bda97c7678120575672581d6e1eb1d203d1ab2292bc6be4d127a9d7dde$lata
+#/home/varun/Desktop/Assignment2_Torrent_System/torrent_system/lata
+#1164177@helloello
+seeder_list_2.txt58bda97c7678120575672581d6e1eb1d203d1ab2292bc6be4d127a9d7dde$kalu
+#/home/varun/Desktop/Assignment2_Torrent_System/torrent_system/kalu
+#1164177@helloello 58bda97c7678120575672581d6e1eb1d203d1ab2292bc6be4d127a9d7dde  $  jala#/home/varun/Desktop/Assignment2_Torrent_System/torrent_system/jala#1164177  58bda97c7678120575672581d6e1eb1d203d1ab2292bc6be4d127a9d7dde  $  jala#/home/varun/Desktop/Assignment2_Torrent_System/torrent_system/jala#1164177  58bda97c7678120575672581d6e1eb1d203d1ab2292bc6be4d127a9d7dde  $  luta#/home/varun/Desktop/Assignment2_Torrent_System/torrent_system/luta#1164177 
+seeder_list_2.txt58bda97c7678120575672581d6e1eb1d203d1ab2292bc6be4d127a9d7dde$marjaa
+#/home/varun/Desktop/Assignment2_Torrent_System/torrent_system/marjaa
+#1164177@hello
+seeder_list_2.txt58bda97c7678120575672581d6e1eb1d203d1ab2292bc6be4d127a9d7dde$lat
+#/home/varun/Desktop/Assignment2_Torrent_System/torrent_system/lat
+#1164177@hello@hello 58bda97c7678120575672581d6e1eb1d203d1ab2292bc6be4d127a9d7dde  $  ssdsadsa#/home/varun/Desktop/Assignment2_Torrent_System/torrent_system/ssdsadsa#1164177 
