@@ -16,7 +16,7 @@
 #include <stdlib.h>
 using namespace std;
 
-#define PORT 18050
+#define PORT 17049
 
 
 
@@ -134,11 +134,9 @@ char ssh_key[999999];
 
 
 
+int share_and_generate(char name[100], char PATH[100]){
 
-
-int main() {
-    
-    FILE *ptr_readfile;
+     FILE *ptr_readfile;
     char ch; /* or some other suitable maximum line size */
     int filecounter=1, charcounter=1, temp=0, data=0;  
     char buffer[999999];
@@ -245,16 +243,7 @@ int main() {
 
 
             // OUR SSH KEY IS READY in pocket variable
-            char name[100];
-            char PATH[500];
             
-
-
-
-            // Variable Preparation For XML
-            cout<<"Enter File Name"<<endl;
-
-              fgets(name, 100, stdin);
 
             
             for(int i=0;i <strlen(name);i++)
@@ -263,7 +252,7 @@ int main() {
             }
 
            
-            getcwd(PATH, sizeof(PATH));
+            
 
             //Appending file name to PATH
             strcat(PATH, "/");
@@ -298,6 +287,59 @@ int main() {
 
 
             call_for_tracker(string_processing);
+
+
+
+}
+
+
+
+int main() {
+    
+    char file_name[100];
+    char local_PATH[500];
+    int choice;
+    
+            
+
+              while(1){
+                printf("Press 1 : share\n");
+                printf("Press 2 : remove\n");
+                printf("Press 3 : get\n");
+                printf("\n Please Enter The Choice : ");
+
+                scanf("%d",&choice);
+
+                    switch(choice){
+
+
+                        case 1:  cout<<"Give File Name : ";
+                                 cin>>file_name;
+                                 cout<<file_name;
+                                 cout<<"\n\n";
+
+                                 cout<<"Give the Local PATH : ";
+                                 cin>>local_PATH;
+                                 cout<<local_PATH;
+                                 cout<<"\n\n";
+
+                                 cout<<"share "<<file_name<<" "<<local_PATH<<"\n";
+                                 share_and_generate(file_name, local_PATH);
+                                 cout<<"\n\n\n";
+                                 break;
+
+                        case 2:  
+                                 cout<<"Give File Name : ";
+                                 fgets(file_name, 100, stdin);
+                                 cout<<"\n\n";
+
+                                 cout<<"remove "<<file_name<<" "<<"\n";
+                               //  remove_mtorrent(file_name);
+
+                                 break;
+
+                             }
+                         }// End of while
 
 
             return 0;

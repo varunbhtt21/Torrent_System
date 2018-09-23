@@ -366,7 +366,7 @@ void *client_handling(void *threadid){
             // Running Iterator
             for (std::multimap<string, string>::iterator it = fetch.begin();
                 it != fetch.end(); it++)
-              fprintf(seed," %s  $  %s \n", it->first.c_str(), it->second.c_str());
+              fprintf(seed," %s    %s \n", it->first.c_str(), it->second.c_str());
 
             cout<<endl<<"Seeder File Updated"<<endl;
               
@@ -396,15 +396,6 @@ void *client_handling(void *threadid){
 
 
 
-void load_data_to_map(){
-
-
-
-
-
-}
-
-
 
 
 
@@ -425,7 +416,7 @@ void load_data_to_map(){
 int main()
 {
 
-    load_data_to_map();
+  //  load_data_to_map();
 
     pthread_t thread1, thread2;
 
