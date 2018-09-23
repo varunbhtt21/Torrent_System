@@ -18,7 +18,7 @@
 #include<time.h>
 using namespace std; 
 
-#define PORT 18050    // For Handling Client Request
+#define PORT 18055    // For Handling Client Request
 #define PORT2 19036  // Tracker 1 to Tracker 2 For Synchronization
 #define PORT3 25503 // Tracker 2 to Tracker 1 For Synchronization
 

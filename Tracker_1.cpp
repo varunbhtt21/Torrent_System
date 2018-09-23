@@ -10,6 +10,8 @@
 #include <stdlib.h>
 #include <iostream>
 #include <map>
+#include <sstream>
+#include <string>
 #include <iterator>
 #include <algorithm>
 #include <fstream>
@@ -18,7 +20,7 @@
 #include <stdlib.h> 
 using namespace std; 
 
-#define PORT 17049    // For Handling Client Request
+#define PORT 13095    // For Handling Client Request
 #define PORT2 19036  // Tracker 1 to Tracker 2 For Synchronization
 #define PORT3 25503 // Tracker 2 to Tracker 1 For Synchronization
 
@@ -243,6 +245,7 @@ void copying_seeder_file() {
 
     for (std::string str; std::getline(in, str); )
     {
+        out << "\n";
         out << str;
     }
 }
@@ -366,7 +369,7 @@ void *client_handling(void *threadid){
             // Running Iterator
             for (std::multimap<string, string>::iterator it = fetch.begin();
                 it != fetch.end(); it++)
-              fprintf(seed," %s    %s \n", it->first.c_str(), it->second.c_str());
+              fprintf(seed," %s    %s ", it->first.c_str(), it->second.c_str());
 
             cout<<endl<<"Seeder File Updated"<<endl;
               
@@ -383,7 +386,7 @@ void *client_handling(void *threadid){
            
 
            tracker_connection(sync_data);
-
+           fetch.clear();
         } // End of Tracker keep on running       
               
       close(newSocket);
@@ -395,11 +398,34 @@ void *client_handling(void *threadid){
 }
 
 
+/*
+
+void *remove_key(){
+
+
+std::ifstream infile("seeder_list_1.txt");
+
+std::multimap<string, string> remove;
+
+std::string line;
+
+
+while (std::getline(infile, line))
+{
+    std::istringstream iss(line);
+    int a, b;
+    if (!(iss >> a >> b)) { break; } // error
+
+    fetch.insert(std::pair<string, string>(a, b));
+    // process pair (a,b)
+}
 
 
 
 
+}
 
+*/
 
 
 
@@ -416,7 +442,7 @@ void *client_handling(void *threadid){
 int main()
 {
 
-  //  load_data_to_map();
+   
 
     pthread_t thread1, thread2;
 
@@ -426,12 +452,14 @@ int main()
 
     int client = pthread_create(&thread2, NULL, client_handling, NULL);
 
+  //  int remove = pthread_create(&thread2, NULL, client_handling, NULL);
+
   
     pthread_exit(NULL);
-	 
+   
     
 
-	  return 0;
+    return 0;
  }
   
    

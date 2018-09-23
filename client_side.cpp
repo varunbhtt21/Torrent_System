@@ -5,7 +5,7 @@
 #include <string>
 #include <cstring>
 #include <unistd.h>
-
+#include <fstream>
 #include <string.h>
 #include <unistd.h>
 #include <sys/socket.h>
@@ -16,13 +16,16 @@
 #include <stdlib.h>
 using namespace std;
 
-#define PORT 17049
+#define PORT 13090  // For Tracker 1
+
+#define PORT 13090  // For Tracker 2
 
 
 
-int call_for_tracker(char buffer[5000]){
 
-  int clientSocket, ret;
+int call_for_tracker1(char buffer[5000]){
+
+  int clientSocket, ret, flag=0;
   struct sockaddr_in serverAddr;
   //char buffer[1024];
 
@@ -30,6 +33,7 @@ int call_for_tracker(char buffer[5000]){
 
   if(clientSocket < 0){
     printf("[-] Error in connection \n");
+    flag = 1;
     exit(1);
   }
 
@@ -44,6 +48,7 @@ int call_for_tracker(char buffer[5000]){
   ret = connect(clientSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
 
   if(ret < 0){
+    flag=1;
     printf("[-] Error in Connection \n");
   }
   printf("[+]Connected To server \n");
@@ -53,15 +58,91 @@ int call_for_tracker(char buffer[5000]){
   
   int b;
 
-  send(clientSocket, buffer, b, 0);
+          b = send(clientSocket, buffer, b, 0);
+
+          if(b==-1){
+
+            flag=1;
+        }
+
+        else{
+            printf("\ndone");
+        }
       
     
-    printf("\ndone");
+    
 
     close(clientSocket);
 
-  return 0;
-}
+  return flag;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+int call_for_tracker2(char buffer[5000]){
+
+  int clientSocket, ret, flag=0;
+  struct sockaddr_in serverAddr;
+  //char buffer[1024];
+
+  clientSocket = socket(AF_INET, SOCK_STREAM, 0);  // For TCP we use SOCK_STREAM
+
+  if(clientSocket < 0){
+    printf("[-] Error in connection \n");
+    flag = 1;
+    exit(1);
+  }
+
+  printf("[+] Clent Socket is created \n");
+
+  memset(&serverAddr, '\0', sizeof(serverAddr));
+
+  serverAddr.sin_family = AF_INET;
+  serverAddr.sin_port = htons(PORT2);
+  serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);  //inet_addr("127.0..0.1");
+
+  ret = connect(clientSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
+
+  if(ret < 0){
+    flag=1;
+    printf("[-] Error in Connection \n");
+  }
+  printf("[+]Connected To server \n");
+
+  
+
+  
+  int b;
+
+          b = send(clientSocket, buffer, b, 0);
+
+          if(b==-1){
+
+            flag=1;
+        }
+
+        else{
+            printf("\ndone");
+        }
+      
+    
+    
+
+    close(clientSocket);
+
+  return flag;
+  }
+
 
 
 
@@ -99,7 +180,7 @@ int call_for_tracker(char buffer[5000]){
 // Calculate File Size
 size_t size = 0;
 
-void file_size(FILE *fb)
+void file_size(std::ofstream& myfile)
 {                   
     static const char *SIZES[] = { "B", "kB", "MB", "GB" };
    
@@ -113,7 +194,9 @@ void file_size(FILE *fb)
         size /= 1024;
     }
 
-    fprintf(fb," %.1f %s ", (float)size + (float)rem / 1024.0, SIZES[div]);
+ //   fprintf(fb," %.1f %s ", (float)size + (float)rem / 1024.0, SIZES[div]);
+
+    myfile << "Filesize : "<< (float)size + (float)rem / 1024.0 << SIZES[div] << "\n";
 
 
 }
@@ -134,9 +217,11 @@ char ssh_key[999999];
 
 
 
-int share_and_generate(char name[100], char PATH[100]){
 
-     FILE *ptr_readfile;
+int processing(char name[5000], char PATH[5000]){
+
+
+FILE *ptr_readfile;
     char ch; /* or some other suitable maximum line size */
     int filecounter=1, charcounter=1, temp=0, data=0;  
     char buffer[999999];
@@ -244,15 +329,18 @@ int share_and_generate(char name[100], char PATH[100]){
 
             // OUR SSH KEY IS READY in pocket variable
             
+            
 
+
+
+            // Variable Preparation For XML
+           
             
             for(int i=0;i <strlen(name);i++)
             if(name[i]==' '){
                 name[i]='_';
             }
 
-           
-            
 
             //Appending file name to PATH
             strcat(PATH, "/");
@@ -262,8 +350,7 @@ int share_and_generate(char name[100], char PATH[100]){
 
 
             
-            // File Writing Started in XML Format 
-            FILE *fb=fopen("test.xml","w");
+            
             
             struct my_data testData;
             strcpy(testData.file_name, name);
@@ -274,61 +361,104 @@ int share_and_generate(char name[100], char PATH[100]){
 
 
             // String Preparation
-            char string_processing[5000], num[5000];
+            char string_processing[5000], num[5000], ip[500], port[500];
 
             strcat(string_processing, pocket);
             strcat(string_processing, "$");
             strcat(string_processing, testData.file_name);
+
             strcat(string_processing, "#");
-            strcat(string_processing, testData.file_path);
-            strcat(string_processing, "#");
-            sprintf(num, "%zu", testData.file_size); 
-            strcat(string_processing, num);
+            strcat(string_processing, ip);
+
+            strcat(string_processing, "#"); 
+            strcat(string_processing, port);
 
 
-            call_for_tracker(string_processing);
+            strcat(name,".mtorrent");
 
+
+            // mtorrent file created
+            ofstream myfile;
+            myfile.open (name);
+
+            myfile << "Tracker1 URL1 : 127.0.0.1  13090 "<<"\n";
+            myfile << "Tracker1 URL2 : 127.0.0.1  18050 "<<"\n";
+            myfile << "Filename : "<< testData.file_name <<"\n";
+       //     myfile << "Filesize : "<< testData.file_size << "\n";
+
+            file_size(myfile);
+            myfile << "Hash String : "<< pocket << "\n";
+            
+
+            myfile.close();
+
+            cout<<"\n";
+
+            cout<<testData.file_name<<".mtorrent File Generated!!!\n\n";
+
+
+
+            int c = 0 , k = 0;
+            c = call_for_tracker1(string_processing);
+
+            if(c == 1){
+                cout<<"Tracker1 is busy!!! Calling to Tracker 2";
+               k = call_for_tracker2(string_processing);
+            }
+
+            if(k==1){
+                cout<<"Both Trackers are busy";
+            }
+
+            exit(0);
 
 
 }
 
 
 
+
+
+
 int main() {
     
-    char file_name[100];
-    char local_PATH[500];
-    int choice;
-    
-            
+         string s1 = "share", s2 = "remove" , s3 = "get";
+          char local_PATH[500], dest_PATH[500];
+          char file_name[500];
+          char ch;
 
-              while(1){
+    
+            if( argc == 6 ) {
+                  
+               }
+
+
+
+            while(1){
                 printf("Press 1 : share\n");
                 printf("Press 2 : remove\n");
                 printf("Press 3 : get\n");
                 printf("\n Please Enter The Choice : ");
 
-                scanf("%d",&choice);
+                scanf("%c",&ch);
 
-                    switch(choice){
+                    switch(ch){
 
 
-                        case 1:  cout<<"Give File Name : ";
+                        case '1':  cout<<"Give File Name : ";
                                  cin>>file_name;
-                                 cout<<file_name;
-                                 cout<<"\n\n";
+                                 cout<<"\n";
 
                                  cout<<"Give the Local PATH : ";
                                  cin>>local_PATH;
-                                 cout<<local_PATH;
-                                 cout<<"\n\n";
+                                 cout<<"\n";
 
                                  cout<<"share "<<file_name<<" "<<local_PATH<<"\n";
-                                 share_and_generate(file_name, local_PATH);
+                                 processing(file_name, local_PATH);
                                  cout<<"\n\n\n";
                                  break;
 
-                        case 2:  
+                        case '2':  
                                  cout<<"Give File Name : ";
                                  fgets(file_name, 100, stdin);
                                  cout<<"\n\n";
@@ -338,9 +468,12 @@ int main() {
 
                                  break;
 
+
+                        default : cout<<"\nwrong choice\n";
+                                   break;
+
                              }
                          }// End of while
-
 
             return 0;
 }
