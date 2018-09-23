@@ -20,9 +20,9 @@
 #include <stdlib.h> 
 using namespace std; 
 
-#define PORT 13095    // For Handling Client Request
-#define PORT2 19036  // Tracker 1 to Tracker 2 For Synchronization
-#define PORT3 25503 // Tracker 2 to Tracker 1 For Synchronization
+#define PORT 13032    // For Handling Client Request
+#define PORT2 19069  // Tracker 1 to Tracker 2 For Synchronization
+#define PORT3 23543 // Tracker 2 to Tracker 1 For Synchronization
 
 
 std::multimap<string, string> fetch;
@@ -452,7 +452,7 @@ int main()
 
     int client = pthread_create(&thread2, NULL, client_handling, NULL);
 
-  //  int remove = pthread_create(&thread2, NULL, client_handling, NULL);
+    int remove = pthread_create(&thread2, NULL, client_handling, NULL);
 
   
     pthread_exit(NULL);

@@ -16,9 +16,9 @@
 #include <stdlib.h>
 using namespace std;
 
-#define PORT 13090  // For Tracker 1
+#define PORT 13032  // For Tracker 1
 
-#define PORT 13090  // For Tracker 2
+#define PORT2 18025  // For Tracker 2
 
 
 
@@ -34,6 +34,7 @@ int call_for_tracker1(char buffer[5000]){
   if(clientSocket < 0){
     printf("[-] Error in connection \n");
     flag = 1;
+    return flag;
     exit(1);
   }
 
@@ -49,6 +50,7 @@ int call_for_tracker1(char buffer[5000]){
 
   if(ret < 0){
     flag=1;
+    return flag;
     printf("[-] Error in Connection \n");
   }
   printf("[+]Connected To server \n");
@@ -63,6 +65,7 @@ int call_for_tracker1(char buffer[5000]){
           if(b==-1){
 
             flag=1;
+            return flag;
         }
 
         else{
@@ -100,7 +103,7 @@ int call_for_tracker2(char buffer[5000]){
   if(clientSocket < 0){
     printf("[-] Error in connection \n");
     flag = 1;
-    exit(1);
+    return 1;
   }
 
   printf("[+] Clent Socket is created \n");
@@ -116,6 +119,7 @@ int call_for_tracker2(char buffer[5000]){
   if(ret < 0){
     flag=1;
     printf("[-] Error in Connection \n");
+    return 1;
   }
   printf("[+]Connected To server \n");
 
@@ -129,6 +133,7 @@ int call_for_tracker2(char buffer[5000]){
           if(b==-1){
 
             flag=1;
+            return flag;
         }
 
         else{
@@ -382,7 +387,7 @@ FILE *ptr_readfile;
             myfile.open (name);
 
             myfile << "Tracker1 URL1 : 127.0.0.1  13090 "<<"\n";
-            myfile << "Tracker1 URL2 : 127.0.0.1  18050 "<<"\n";
+            myfile << "Tracker2 URL2 : 127.0.0.1  18050 "<<"\n";
             myfile << "Filename : "<< testData.file_name <<"\n";
        //     myfile << "Filesize : "<< testData.file_size << "\n";
 
@@ -401,13 +406,18 @@ FILE *ptr_readfile;
             int c = 0 , k = 0;
             c = call_for_tracker1(string_processing);
 
+
             if(c == 1){
-                cout<<"Tracker1 is busy!!! Calling to Tracker 2";
+                cout<<"\nTracker1 is busy!!! Calling to Tracker 2\n";
                k = call_for_tracker2(string_processing);
             }
 
+            else{
+                cout<<"\nConnected To tracker 1";
+            }
+
             if(k==1){
-                cout<<"Both Trackers are busy";
+                cout<<"\nBoth Trackers are busy";
             }
 
             exit(0);
@@ -419,25 +429,59 @@ FILE *ptr_readfile;
 
 
 
+void remove_mtorrent(char file_name[100]){
 
-int main() {
+
+   if (remove(file_name) == 0) {
+      printf("\nDeleted successfully\n\n"); 
+   }
+   else{
+      printf("\nUnable to delete the file\n"); 
+   }
+
+
+
+return ;
+
+
+}
+
+
+
+
+
+
+int main(int argc, char *argv[]) {
     
          string s1 = "share", s2 = "remove" , s3 = "get";
           char local_PATH[500], dest_PATH[500];
           char file_name[500];
           char ch;
 
-    
-            if( argc == 6 ) {
-                  
-               }
+          char client_ip[100],  tracker1_ip[100], tracker2_ip[100];
+          char tracker1_port[10], tracker2_port[10] ,client_port[10];
 
+          strcpy(client_ip, argv[1]);
+          strcpy(client_port, argv[2]);
+          strcpy(tracker1_ip, argv[3]);
+          strcpy(tracker1_port, argv[4]);
+          strcpy(tracker2_ip, argv[5]);
+          strcpy(tracker2_port, argv[6]);
+
+          cout<<"\n"<<client_ip<<"\n";
+          cout<<client_port<<"\n";
+          cout<<tracker1_ip<<"\n";
+          cout<<tracker2_ip<<"\n";
+          cout<<tracker1_port<<"\n";
+          cout<<tracker2_port<<"\n";
+          
 
 
             while(1){
                 printf("Press 1 : share\n");
                 printf("Press 2 : remove\n");
                 printf("Press 3 : get\n");
+                printf("\n\n-------------------------------------------------------------------------------------------------------------------------\n\n");
                 printf("\n Please Enter The Choice : ");
 
                 scanf("%c",&ch);
@@ -460,11 +504,11 @@ int main() {
 
                         case '2':  
                                  cout<<"Give File Name : ";
-                                 fgets(file_name, 100, stdin);
+                                 cin>>file_name;
                                  cout<<"\n\n";
 
                                  cout<<"remove "<<file_name<<" "<<"\n";
-                               //  remove_mtorrent(file_name);
+                                 remove_mtorrent(file_name);
 
                                  break;
 
