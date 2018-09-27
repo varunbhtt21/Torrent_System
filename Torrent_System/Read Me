@@ -1,0 +1,147 @@
+****************************************************************************************Documentation For FILE-XP EXPLORER*******************************************************************************
+
+
+
+
+***** PLEASE OPEN THE EXPLORER IN FULL SCREEN*********
+
+
+
+My Interactive File-XP Explorer is consist of two modes :-
+
+1. Normal Mode
+2. Command Mode
+
+
+1. Screen Presentation or Division
+
+Ist Row
+
+My screen is divided in two parts first above half i.e Normal mode [covers 80% of the screen] and lower half COMMAND MODE SECTION [covers 20% of the Screen]. There are total three rows in which I divided the output section .  First Row Shows my present working directory information and it will updated every time I access the new Directory and this part is also used to display warning like "STACK EMPTY" , "STACK FULL". All the Normal Mode Warnings Displayed here.
+
+
+IInd Row 
+	This Row Shows the information of folders and files present in PRESENT WORKING DIRECTORY. The information that it contains FILE NAME, FILE PERMISSION, FILE SIZE, MODIFIED DATE, GROUP NAME. There is also a pointer which points to the first position of the record. By just arrow key up and down , the screen moves upward and downward , a counter is also included with the arrow key which shows the current integer position of arrow.
+* Scrolling is implemented nicely with wrap-around feature.
+
+
+IIIrd Row
+	This row is a part of Command Mode . On pressing :(colon) .My Normal Mode Changes to command mode and there is a section which says : "Type Your Command :".In command mode many functionalities are performed like Deleting a File,Searching a file/folder, Snapshot of a Directory, goto , Creating File/Folder. 
+
+
+
+
+
+
+
+2. FUNCTIONALITY
+
+1. CREATE DIRECTORY
+
+	The create directory function is working on both Absolute as well as Relative Path.
+
+Ex- :create_dir foo .                   		// Creating Directory at pwd
+Ex- :create_dir folder_name /folder1        		// giving Relative Path
+Ex- :create_dir folder_name /home/varun/Desktop/folder2	// giving absolute Path
+
+OUTPUT DISPLAYED On lower Right side of screen i.e DIRECTORY CREATED !!! or DIRECTORY ALREADY EXISTS
+
+
+
+
+
+2. CREATE FILE
+	
+The create file function is working on both Absolute as well as Relative Path.
+
+Ex- create_file foo.txt .                   			// Creating Directory at pwd
+Ex- create_file folder_name /new1.txt      			// giving Relative Path
+Ex- create_file folder_name /home/varun/Desktop/new2.txt	// giving absolute Path
+
+OUTPUT DISPLAYED On lower Right side of screen i.e 
+on success  => FILE CREATED !!! 
+on failure => FILE ALREADY EXISTS
+
+
+
+
+
+
+3. Delete file​ / Delete Directory
+
+FORMAT :  delete_file <file_path>       delete_dir <directory_path>
+
+The delete function only works with relative path According to condition given in the Assignment.
+
+Ex- delete_dir varun/new                           // Relative Path
+Ex- delete_file varun/foo.txt			   // Relative Path
+
+
+
+
+
+4. GOTO
+
+Format: goto <location>
+
+1. working on Absolute Path 
+2. working on goto /
+
+Ex- goto /home/varun/Desktop
+Ex- goto /                          // Relative to pwd
+
+To get back to previous screen , Press any up or down arrow key
+
+
+
+
+
+
+5. Search File/Directory
+ 
+FORMAT : search <filename>
+
+The searching function takes the file name and prints the Absolute Path and press any up-down arrow key to get back in normal mode.The output of search is displayed on lower Right side of the screen i.e prints as Search Results.
+
+ex: search file1
+ex: search folder1
+
+
+
+
+6. Snapshot
+
+FORMAT : snapshot <folder> <dumpfile>​
+
+The snapshot function takes the folder name and dump file name where data get stored. The snapshot code displays the output in the file in a Depth First Search manner , covering level by level and printing the output in the file that created in home directory.
+
+ex: snapshot Test newfolder
+
+
+
+
+ 7. On pressing ESC key the mode is changing. there is light indicator on top right of the screen continuously glowing .Blue colour shows NORMAL MODE and Red colour shows command mode.
+
+
+
+
+
+8. COPY , MOVE
+	NOT IMPLEMENTED
+
+
+
+
+
+PROBLEMS:
+
+1. On COMMAND MODE , when we press the esc key it switched to Normal mode but multiple pressing of arrow keys also switching the program to Normal MODE.
+2. Using Search multiple times, it displaying the results but sometimes new results displaying on the screen is overlapping the previous results.
+
+
+
+
+
+		
+
+
